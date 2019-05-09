@@ -6,3 +6,9 @@ A standalone script that takes a job list, performs a fast load of the file and 
 ### Prerequisites
 *  Python 3.6 or higher
 *  Pampro Python module installed ([https://gitlab.mrc-epid.cam.ac.uk/PATT/pampro](url))
+*  Batch-processing capacity (Recommended)
+
+### Downloading and preparing the environment
+There are two options available for downloading the code, depending on whether you wish to use Git.  Option 1 requires Git to be installed in your environment - [https://git-scm.com/](url).
+1.  From the command line, navigate to your desired folder location and execute the following command:
+`git clone https://gitlab.mrc-epid.cam.ac.uk/PATT/qc_diagnostics/`
