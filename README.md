@@ -8,6 +8,8 @@ A standalone script that takes a job list, performs a fast load of the file and 
 *  Pampro Python module installed ([https://gitlab.mrc-epid.cam.ac.uk/PATT/pampro](url))
 *  Batch-processing capacity (Recommended)
 
+Also, the process currently only supports AX3 or GENEActiv monitor output in the form of either .cwa or .bin binary files.
+
 ### Downloading and preparing the environment
 There are two options available for downloading the code, depending on whether you wish to use Git.  Option 1 requires Git to be installed in your environment ([https://git-scm.com/](url)).
 1.  EITHER use the command line to navigate to your desired folder location and execute the following command:
@@ -32,7 +34,10 @@ The processing script takes a 'job number' and 'number of jobs' from the command
 1.  If you do not have the capacity to submit multiple jobs then the simplest way to run the script is to give these both as "1" when submitting the script. Use the command line to navigate to the folder containing the script and issue the following command: `ipython QC_Diagnostics_v1.0.py 1 1` 
 This will run the script as one process.
 
-2.  If, however, you do have multiple-process capability you could submit the script in batches in this way: `ipython QC_Diagnostics_v1.0.py 1 3 & ipython QC_Diagnostics_v1.0.py 2 3 $ ipython QC_Diagnostics_v1.0.py 3 3` 
+2.  If, however, you do have multiple-process capability you could submit the script in batches in this way: `ipython QC_Diagnostics_v1.0.py 1 3 & ipython QC_Diagnostics_v1.0.py 2 3 & ipython QC_Diagnostics_v1.0.py 3 3` 
 This would execute the python script three times, each process using one third of the job list.
 
 3.  Another batch processing option would be to use a scheduling engine, such as Sun Grid Engine.  The shell script 'qc_batch_sge.sh' has been written to take the processing script's relative path, and the number of batches required.  It then uses the python environment (in this case provided by Anaconda3) in order to automatically submit the required number of jobs.  In order to submit three jobs, it would be executed from the command line thus: `./qc_batch_sge.sh QC_Diagnostics_v1.0.py 3`
+
+### Output
+The process produces output for each raw file processed, as a wide-format 'qc_meta' .csv file.  The variables come from either the metadata contained in the file itself (which varies between the AX3 and GENEActiv files) and the derived output from the QC process.  
