@@ -15,4 +15,8 @@ There are two options available for downloading the code, depending on whether y
 
 2.  OR select the 'Repository' option from the lefthand sidebar, and select the download icon on the top-right of the Repository page.  You can select from different formats of download.
 3.  Regardless of whether you used step 1 or 2 above, you should now have a folder that contains the required files.  Wherever you will be executing the script from you'll need to create a folder named "_logs", this is where log files will be created by the process.
-4.  
+4.  Included in the downloaded files is a blank job file containing the required column headings "id" and "filename".  The id column must contain unique values and the filename column must contain the complete path for each file requiring processing.
+
+### Editing the script
+As this is a self-contained process, all the settings are found at the top of the processing script - 
+>  QC_Diagnostics_v1.0.py. 
