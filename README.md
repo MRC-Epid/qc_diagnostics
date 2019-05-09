@@ -19,7 +19,10 @@ There are two options available for downloading the code, depending on whether y
 
 ### Editing the script
 As this is a self-contained process, all the settings are found at the top of the processing script QC_Diagnostics_v1.0.py.
+
 The settings are commented to explain their usage, and as a minimum the filetype setting should be checked and the 'charts', 'visualisation' and 'anomalies' folder locations must be provided.
+
 The plotting functionality can be turned off by changing the 'PLOT' variable to "NO".
+
 'Processing_epoch' and 'noise_cutoff_mg' are set to standard defualt values, but can be altered if required.
 
