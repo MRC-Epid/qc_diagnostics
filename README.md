@@ -26,3 +26,9 @@ The plotting functionality can be turned off by changing the 'PLOT' variable to 
 
 'Processing_epoch' and 'noise_cutoff_mg' are set to standard defualt values, but can be altered if required.
 
+### Executing the script
+The processing script takes a 'job number' and 'number of jobs' from the command line as arguments.  These are used in the script to split the job list into sections.  Submitting the job can be done in a number of ways, depending on your environment.
+
+1.  If you do not have the capacity to submit multiple jobs then the simplest way to run the script is to give these both as "1" when submitting the script. Use the command line to navigate to the folder containing the script and issue the following command: `ipython QC_Diagnostics_v1.0.py 1 1` This will run the script as one process.
+2.  If, however, you do have multiple-process capability you could submit the script in batches in this way: `ipython QC_Diagnostics_v1.0.py 1 3 & ipython QC_Diagnostics_v1.0.py 2 3 $ ipython QC_Diagnostics_v1.0.py 3 3` This would execute the python script three times, each process using one third of the job list.
+3.  Anotehr option would be to use a scheduling engine, such as Sun Grid Engine.  The shell script 'qc_batch_sge.sh' has been written to take the processing script's relative path, and the number of batches required.  It then uses the python environment (in this case provided by Anaconda3) in order to automatically submit the required number of jobs.  In order to submit three jobs, it would be executed from the command line thus: `./qc_batch_sge.sh QC_Diagnostics_v1.0.py 3`
