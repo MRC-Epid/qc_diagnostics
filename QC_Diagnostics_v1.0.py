@@ -20,32 +20,20 @@ import pandas as pd
 # FOLDER & FILE SETTINGS
 filetype = "Axivity"            # raw data file filetype ("GeneActiv" or "Axivity")
 
-job_file_path = "/scratch3/PATT/QC_test/job_file.csv"   	   # location of csv job file
-charts_folder = "/scratch3/PATT/QC_test/_visualisation"        # destination of plots (if required, else leave as "")
-results_folder = "/scratch3/PATT/QC_test/_results"             # destination of meta results
-anomalies_folder = "/scratch3/PATT/QC_test/_anomalies"	       # destination of anomaly records
+job_file_path = ""   	   		# location of csv job file
+charts_folder = ""        		# destination of plots (if required, else leave as "")
+results_folder = ""             # destination of meta results
+anomalies_folder = ""	       	# destination of anomaly records
 
 # PROCESSING SETTINGS AND THRESHOLDS
 Processing_epoch = 5            # processing epoch, in seconds, used for generating sample number statistic
 noise_cutoff_mg = 13            # noise threshold in mg
 
-stats = OrderedDict()           # dictionary of statistics
-stats["ENMO"] = [("generic", ["mean", "n", "missing", "sum"])]
-stats["Battery"] = [("generic", ["mean"])]
-
-anomaly_types = ["A", "B", "C", "D", "E", "F", "G"] 	# A list of known anomaly types identified by pampro
-
 # PLOTTING SETTINGS
-PLOT = "YES"					# Choose whether to produce plots, or not ("YES" or "NO")
-enmo_max = 10000                # maximum value of enmo channel, for plotting
+PLOT = "YES"                    # Choose whether to produce plots, or not ("YES" or "NO")
+enmo_max = 10000                # maximum value of enmo channel, for plotting (i.e. maximum value of the y-axis)
 GA_battery_max = 4.3            # maximum value of GeneActiv battery, used to find percentage charged
 AX_battery_max = 210            # maximum value of Axivity battery, used to find percentage charged
-
-# create a dataframe of the channels, channel minimum and maximum values to be plotted
-channels_info = {'channel_name': ["ENMO", "Battery_percentage"],
-                 'channel_min': [0,0],
-                 'channel_max': [enmo_max, 100]}
-plotting_df = pd.DataFrame.from_dict(channels_info)
 
 ##################################################################################################################
 # SCRIPT BEGINS BELOW
@@ -53,6 +41,19 @@ plotting_df = pd.DataFrame.from_dict(channels_info)
 
 job_num = int(sys.argv[1])
 num_jobs = int(sys.argv[2])
+
+# create a dataframe of the channels, channel minimum and maximum values to be plotted
+channels_info = {'channel_name': ["ENMO", "Battery_percentage"],
+                 'channel_min': [0,0],
+                 'channel_max': [enmo_max, 100]}
+plotting_df = pd.DataFrame.from_dict(channels_info)
+
+# create a dictionary of statistics
+stats = OrderedDict()           
+stats["ENMO"] = [("generic", ["mean", "n", "missing", "sum"])]
+stats["Battery"] = [("generic", ["mean"])]
+
+anomaly_types = ["A", "B", "C", "D", "E", "F", "G"]     # A list of known anomaly types identified by pampro
 
 def qc_analysis(job_details):
 
@@ -128,9 +129,9 @@ def qc_analysis(job_details):
 
     # Split the enmo channel into lists of bouts for each quadrant:
     ''' quadrant_0 = 00:00 -> 06: 00
-		quadrant_1 = 06:00 -> 12: 00
-		quadrant_2 = 12:00 -> 18: 00
-		quadrant_3 = 18:00 -> 00: 00 '''
+        quadrant_1 = 06:00 -> 12: 00
+        quadrant_2 = 12:00 -> 18: 00
+        quadrant_3 = 18:00 -> 00: 00 '''
     q_0, q_1, q_2, q_3 = channel_inference.create_quadrant_bouts(enmo)
 
     # calculate the intersection of each set of bouts with wear_bouts, then calculate the wear time in each quadrant.
