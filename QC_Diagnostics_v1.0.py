@@ -20,10 +20,10 @@ import pandas as pd
 # FOLDER & FILE SETTINGS
 filetype = "Axivity"            # raw data file filetype ("GeneActiv" or "Axivity")
 
-job_file_path = ""   	   		# location of csv job file
-charts_folder = ""        		# destination of plots (if required, else leave as "")
-results_folder = ""             # destination of meta results
-anomalies_folder = ""	       	# destination of anomaly records
+job_file_path = ""              # location of csv job file
+charts_folder = ""              # location for plots (if required, else leave as "")
+results_folder = ""             # location for meta results
+anomalies_folder = ""           # location for anomaly records
 
 # PROCESSING SETTINGS AND THRESHOLDS
 Processing_epoch = 5            # processing epoch, in seconds, used for generating sample number statistic
