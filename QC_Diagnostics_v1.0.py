@@ -100,8 +100,28 @@ def qc_analysis(job_details):
     battery_percentage = Channel.Channel.clone(battery)
     battery_percentage.data = (battery.data / battery_max) * 100
 
+    # create a "check battery" flag:
+    check_battery = False
+
+    # calculate first and last battery percentages
     first_battery_pct = round((battery_percentage.data[1]),2)
     last_battery_pct = round((battery_percentage.data[-1]),2)
+    header["QC_first_battery_pct"] = first_battery_pct
+    header["QC_last_battery_pct"] = last_battery_pct
+    
+    # calculate lowest battery percentage
+    lowest_battery_pct = min(battery_percentage.data)
+    header["QC_lowest_battery_pct"] = round(lowest_battery_pct,2)
+        
+    # find the maximum battery discharge in any 24hr period:    
+    max_discharge = battery_percentage.channel_max_decrease(time_period=timedelta(hours=24))
+    header["max_discharge_24hours"] = round(max_discharge, 2)
+
+    # change flag if lowest battery percentage dips below 10% at any point or maximum discharge greater then 25% in 24 hours
+    if lowest_battery_pct < 10 or max_discharge > 25:
+        check_battery = True
+        
+    header["check_battery"] = str(check_battery)
 
     # Calculate the time frame to use
     start = time_utilities.start_of_day(x.timeframe[0])
@@ -160,8 +180,6 @@ def qc_analysis(job_details):
         results_ts.draw_qc(plotting_df, file_target=os.path.join(charts_folder,"{}_plots.jpeg".format(filename_short)))
 
     header["QC_script"] = version
-    header["QC_first_battery_pct"] = first_battery_pct
-    header["QC_last_battery_pct"] = last_battery_pct
     
     # file of metadata from qc process
     qc_output = os.path.join(results_folder, "qc_meta_{}.csv".format(filename_short))
