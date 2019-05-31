@@ -74,7 +74,12 @@ def qc_analysis(job_details):
     header["QC_filename"] = os.path.basename(filename)
 
     x, y, z, battery, temperature = ts.get_channels(["X", "Y", "Z", "Battery", "Temperature"])
-    channels = [x, y, z, battery, temperature]
+    
+    # create a channel of battery percentage, based on the assumed battery maximum value 
+    battery_pct = Channel.Channel.clone(battery)
+    battery_pct.data = (battery.data / battery_max) * 100
+    
+    channels = [x, y, z, battery, temperature, battery_pct]
     
     anomalies = diagnostics.diagnose_fix_anomalies(channels, discrepancy_threshold=2)
 
@@ -97,28 +102,35 @@ def qc_analysis(job_details):
         for type in anomaly_types:
             anomalies_dict["QC_anomaly_{}".format(type)] = 0
         
-    battery_percentage = Channel.Channel.clone(battery)
-    battery_percentage.data = (battery.data / battery_max) * 100
-
     # create a "check battery" flag:
     check_battery = False
 
     # calculate first and last battery percentages
-    first_battery_pct = round((battery_percentage.data[1]),2)
-    last_battery_pct = round((battery_percentage.data[-1]),2)
+    first_battery_pct = round((battery_pct.data[1]),2)
+    last_battery_pct = round((battery_pct.data[-1]),2)
     header["QC_first_battery_pct"] = first_battery_pct
     header["QC_last_battery_pct"] = last_battery_pct
     
     # calculate lowest battery percentage
-    lowest_battery_pct = min(battery_percentage.data)
+    # check if battery.pct has a missing_value, exclude those values if they exist
+    if battery_pct.missing_value == "None":
+        lowest_battery_pct = min(battery_pct.data)
+    else:
+        test_array = np.delete(battery_pct.data, np.where(battery_pct.data == battery_pct.missing_value))
+        lowest_battery_pct = min(test_array)
+    
     header["QC_lowest_battery_pct"] = round(lowest_battery_pct,2)
+    header["QC_lowest_battery_threshold"] = battery_minimum
         
     # find the maximum battery discharge in any 24hr period:    
-    max_discharge = battery_percentage.channel_max_decrease(time_period=timedelta(hours=24))
-    header["max_discharge_24hours"] = round(max_discharge, 2)
+    max_discharge = battery_pct.channel_max_decrease(time_period=timedelta(hours=discharge_hours))
+    header["QC_max_discharge"] = round(max_discharge, 2)
+    header["QC_discharge_time_period"] = "{} hours".format(discharge_hours)
+    header["QC_discharge_threshold"] = discharge_pct
 
-    # change flag if lowest battery percentage dips below 10% at any point or maximum discharge greater then 25% in 24 hours
-    if lowest_battery_pct < 10 or max_discharge > 25:
+    # change flag if lowest battery percentage dips below battery_minimum at any point 
+    # OR maximum discharge greater than discharge_pct over time period "hours = discharge_hours"
+    if lowest_battery_pct < battery_minimum or max_discharge > discharge_pct:
         check_battery = True
         
     header["check_battery"] = str(check_battery)
@@ -170,7 +182,7 @@ def qc_analysis(job_details):
         # Show non-wear bouts in purple
         bout.draw_properties = {'lw': 0, 'alpha': 0.75, 'facecolor': '#764af9'}
 
-    for channel, channel_name in zip([enmo, battery_percentage],["ENMO", "Battery_percentage"]):
+    for channel, channel_name in zip([enmo, battery_pct],["ENMO", "Battery_percentage"]):
         channel.name = channel_name
         results_ts.add_channel(channel)
 
@@ -198,4 +210,4 @@ def qc_analysis(job_details):
         del c.indices
         del c.cached_indices
 
-batch_processing.batch_process(qc_analysis, job_file_path, job_num, num_jobs)
+batch_processing.batch_process(qc_analysis, job_file_path, job_num, num_jobs, task="qc_diagnostics")
