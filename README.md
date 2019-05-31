@@ -1,14 +1,17 @@
 ## QC Diagnostics 
 
 ### Introduction
-A standalone script that takes a job list, performs a fast load of the file and checks for timeseries discrepancies.  It also returns pwear values for quadrants of the day and device battery levels.  It performs estimates of ENMO and non-wear, and has the functionality to return this in a graph, along with battery percentage, per file processed.
+This standalone script takes in a job list of filepaths, performs a fast load of the file (at page-level), extracts basic metadata from file and checks for time-series discrepancies (“anomalies”). It also returns an **estimate** of wear time (pwear) across the file and within quadrants of the day (to aid compliance monitoring) and device battery levels (to monitor device performance). It has the functionality to produce graphs showing **approximated** ENMO and battery percentage, with shaded sections of non-wear, for each file processed. It is designed to provide a quick overview of the file, without the need for full processing. 
 
 ### Prerequisites
+*  Binary files from either an AX3 or GENEActiv device (see below)
 *  Python 3.6 or higher
 *  Pampro Python module installed ([https://gitlab.mrc-epid.cam.ac.uk/PATT/pampro](url))
-*  Batch-processing capacity (Recommended)
+*  Batch-processing capacity (recommended)
 
-Also, the process currently only supports AX3 or GENEActiv monitor output in the form of either .cwa or .bin binary files.
+The process currently only supports .cwa (AX3) or .bin (GENEActiv) binary files.
+
+NOTE: This process has been developed on a Linux operating system, but is also compatible with Windows.  It has NOT been tested for any other operating system type, e.g. macOS.
 
 ### Downloading and preparing the environment
 There are two options available for downloading the code, depending on whether you wish to use Git.  Option 1 requires Git to be installed in your environment ([https://git-scm.com/](url)).
@@ -17,16 +20,16 @@ There are two options available for downloading the code, depending on whether y
 
 2.  OR select the 'Repository' option from the lefthand sidebar, and select the download icon on the top-right of the Repository page.  You can select from different formats of download.
 3.  Regardless of whether you used step 1 or 2 above, you should now have a folder that contains the required files.  Wherever you will be executing the script from you'll need to create a folder named "_logs", this is where log files will be created by the process.
-4.  Included in the downloaded files is a blank job file containing the required column headings "id" and "filename".  The id column must contain unique values and the filename column must contain the complete path for each file requiring processing.
+4.  Included in the downloaded files is an example job file with the required column headings "id" and "filename". The id column must contain unique values and the filename column must contain the complete filepath of each file requiring processing.
 
 ### Editing the script
 As this is a self-contained process, all the settings are found at the top of the processing script QC_Diagnostics_v1.0.py.
 
-The settings are commented to explain their usage, and as a minimum the filetype setting should be checked and the 'charts', 'visualisation' and 'anomalies' folder locations must be provided.
+The settings are commented to explain their usage, and, as a minimum, the ‘filetype’ setting should be checked and the job file location, 'charts', 'results' and 'anomalies' folder locations must be provided.
 
-The plotting functionality can be turned off by changing the 'PLOT' variable to "NO".
+'Processing_epoch' and 'noise_cutoff_mg' are set to standard default values, but can be altered if required.
 
-'Processing_epoch' and 'noise_cutoff_mg' are set to standard defualt values, but can be altered if required.
+The plotting functionality can be turned off by changing the 'PLOT' setting to "NO".
 
 ### Executing the script
 The processing script takes a 'job number' and 'number of jobs' from the command line as arguments.  These are used in the script to split the job list into sections.  Submitting the job can be done in a number of ways, depending on your environment.
@@ -40,4 +43,4 @@ This would execute the python script three times, each process using one third o
 3.  Another batch processing option would be to use a scheduling engine, such as Sun Grid Engine.  The shell script 'qc_batch_sge.sh' has been written to take the processing script's relative path, and the number of batches required.  It then uses the python environment (in this case provided by Anaconda3) in order to automatically submit the required number of jobs.  In order to submit three jobs, it would be executed from the command line thus: `./qc_batch_sge.sh QC_Diagnostics_v1.0.py 3`
 
 ### Output
-The process produces output for each raw file processed, as a wide-format 'qc_meta' .csv file.  The variables come from either the metadata contained in the file itself (which varies between the AX3 and GENEActiv files) and the derived output from the QC process.  
+The process produces output for each raw file processed, as a wide-format 'qc_meta' .csv file. The variables come from both the metadata contained in the file itself (which varies between the AX3 and GENEActiv files) and the derived output from the QC process. These files can be consolidated and reviewed accordingly.  If an output file already exists for the current raw file being processed it will be overwritten with the results from the current process.  In addition, if there are any “anomalies” detected in the raw files processed, an ‘anomalies’ .csv file will be created in the specified folder.  
