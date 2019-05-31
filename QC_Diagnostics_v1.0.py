@@ -133,7 +133,7 @@ def qc_analysis(job_details):
     if lowest_battery_pct < battery_minimum or max_discharge > discharge_pct:
         check_battery = True
         
-    header["check_battery"] = str(check_battery)
+    header["QC_check_battery"] = str(check_battery)
 
     # Calculate the time frame to use
     start = time_utilities.start_of_day(x.timeframe[0])
