@@ -28,6 +28,11 @@ anomalies_folder = ""           # location for anomaly records
 # PROCESSING SETTINGS AND THRESHOLDS
 Processing_epoch = 5            # processing epoch, in seconds, used for generating sample number statistic
 noise_cutoff_mg = 13            # noise threshold in mg
+discharge_hours = 24            # number of hours for the examination of the battery discharge rate
+discharge_pct = 25              # maximum percentage of battery charge that can be discharged in "discharge_hours" without warning flag
+battery_minimum = 10            # minimum percentage of battery charge, below which warning flag is triggered
+axis_max = 1.2                    # upper threshold for each acceleration axis, above which there is an anomaly for that axis
+axis_min = -1.2                    # lower threshold for each acceleration axis, below which there is an anomaly for that axis
 
 # PLOTTING SETTINGS
 PLOT = "YES"                    # Choose whether to produce plots, or not ("YES" or "NO")
@@ -57,7 +62,7 @@ anomaly_types = ["A", "B", "C", "D", "E", "F", "G"]     # A list of known anomal
 
 def qc_analysis(job_details):
 
-    id_num = str(job_details["id"])
+    id_num = str(job_details["pid"])
     filename = job_details["filename"]
 
     filename_short = os.path.basename(filename).split('.')[0]
@@ -83,9 +88,9 @@ def qc_analysis(job_details):
     
     anomalies = diagnostics.diagnose_fix_anomalies(channels, discrepancy_threshold=2)
 
-    # create dictionary of anomalies total and types
-    anomalies_dict = {"QC_anomalies_total": len(anomalies)}
-    
+    # create dictionary of anomalies types
+    anomalies_dict = dict()
+                        
     # check whether any anomalies have been found:
     if len(anomalies) > 0:
         anomalies_file = os.path.join(anomalies_folder, "{}_anomalies.csv".format(filename_short))
@@ -102,6 +107,20 @@ def qc_analysis(job_details):
         for type in anomaly_types:
             anomalies_dict["QC_anomaly_{}".format(type)] = 0
         
+    # check for axis anomalies
+    axes_dict = diagnostics.diagnose_axes(x, y, z, noise_cutoff_mg=13)
+    
+    axis_anomaly = False
+    
+    for key, val in axes_dict.items():
+        anomalies_dict["QC_{}".format(key)] = val
+        if key.endswith("max"):
+            if val > axis_max:
+                axis_anomaly = True
+        elif key.endswith("min"):
+            if val < axis_min:
+                axis_anomaly = True
+
     # create a "check battery" flag:
     check_battery = False
 
@@ -134,6 +153,7 @@ def qc_analysis(job_details):
         check_battery = True
         
     header["QC_check_battery"] = str(check_battery)
+    header["QC_axis_anomaly"] = str(axis_anomaly)
 
     # Calculate the time frame to use
     start = time_utilities.start_of_day(x.timeframe[0])
