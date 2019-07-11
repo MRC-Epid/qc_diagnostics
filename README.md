@@ -6,7 +6,7 @@ This standalone script takes in a job list of filepaths, performs a fast load of
 ### Prerequisites
 *  Binary files from either an AX3 or GENEActiv device (see below)
 *  Python 3.6 or higher
-*  Pampro Python module installed ([https://gitlab.mrc-epid.cam.ac.uk/PATT/pampro](url))
+*  Pampro Python module installed ([https://github.com/MRC-Epid/pampro](url))
 *  Batch-processing capacity (recommended)
 
 The process currently only supports .cwa (AX3) or .bin (GENEActiv) binary files.
@@ -16,7 +16,7 @@ NOTE: This process has been developed on a Linux operating system, but is also c
 ### Downloading and preparing the environment
 There are two options available for downloading the code, depending on whether you wish to use Git.  Option 1 requires Git to be installed in your environment ([https://git-scm.com/](url)).
 1.  EITHER use the command line to navigate to your desired folder location and execute the following command:
-`git clone https://gitlab.mrc-epid.cam.ac.uk/PATT/qc_diagnostics/`
+`git clone https://https://github.com/MRC-Epid/qc_diagnostics/`
 
 2.  OR select the 'Repository' option from the lefthand sidebar, and select the download icon on the top-right of the Repository page.  You can select from different formats of download.
 3.  Regardless of whether you used step 1 or 2 above, you should now have a folder that contains the required files.  Also included is a folder named "_logs", this is where log files will be created by the process.
