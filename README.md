@@ -1,7 +1,7 @@
 ## QC Diagnostics 
 
 ### Introduction
-This standalone script takes in a job list of filepaths, performs a fast load of the file (at page-level), extracts basic metadata from file and checks for time-series discrepancies (“anomalies”). It also returns an **estimate** of wear time (pwear) across the file and within quadrants of the day (to aid compliance monitoring) and device battery levels (to monitor device performance). It has the functionality to produce graphs showing **approximated** ENMO and battery percentage, with shaded sections of non-wear, for each file processed. It is designed to provide a quick overview of the file, without the need for full processing. 
+This standalone script takes in a job list of filepaths, performs a fast load of the file (at page-level), extracts basic metadata from file and checks for time-series and axis discrepancies (“anomalies”). It also returns an **estimate** of wear time (pwear) across the file and within quadrants of the day (to aid compliance monitoring) and device battery levels (to monitor device performance). It has the functionality to produce graphs showing **approximated** ENMO and battery percentage, with shaded sections of non-wear, for each file processed. It is designed to provide a quick overview of the file, without the need for full processing. 
 
 ### Prerequisites
 *  Binary files from either an AX3 or GENEActiv device (see below)
