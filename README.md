@@ -6,7 +6,7 @@ This standalone script takes in a job list of filepaths, performs a fast load of
 ### Prerequisites
 *  Binary files from either an AX3 or GENEActiv device (see below)
 *  Python 3.6 or higher
-*  Pampro Python module installed ([https://github.com/MRC-Epid/pampro](url))
+*  pampro Python module installed ([https://github.com/MRC-Epid/pampro](url))
 *  Batch-processing capacity (recommended)
 
 The process currently only supports .cwa (AX3) or .bin (GENEActiv) binary files.
