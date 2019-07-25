@@ -217,7 +217,7 @@ def qc_analysis(job_details):
     if PLOT == "YES":    
         # Plot statistics as subplots in one plot file per data file
         results_ts["ENMO"].add_annotations(nonwear_bouts)
-        results_ts.draw_qc(plotting_df, file_target=os.path.join(charts_folder,"{}_plots.jpeg".format(filename_short)))
+        results_ts.draw_qc(plotting_df, file_target=os.path.join(charts_folder,"{}_plots.png".format(filename_short)))
 
     header["QC_script"] = version
     
