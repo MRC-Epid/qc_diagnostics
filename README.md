@@ -44,3 +44,13 @@ This would execute the python script three times, each process using one third o
 
 ### Output
 The process produces output for each raw file processed, as a wide-format 'qc_meta' .csv file. The variables come from both the metadata contained in the file itself (which varies between the AX3 and GENEActiv files) and the derived output from the QC process. These files can be consolidated and reviewed accordingly.  If an output file already exists for the current raw file being processed it will be overwritten with the results from the current process.  In addition, if there are any “anomalies” detected in the raw files processed, an ‘anomalies’ .csv file will be created in the specified folder.  
+
+### Executing script to combine and review QC diagnostics output files
+The script combine_review_qc_variables.py combines the qc_meta files for that were produced for each file into one. It then run some checks on the main variables and outputs the checks to a qc_log named 'QC_diagnostics_log_DDMonYYYY.docx'. The checks that are run are explained in the log together with PATT recommendations on how to handle any issues. As this is a self-contained process, all the settings that needs adjusting to run the script are found at the top of the processing script combine_review_qc_variables.py. Comments are added in the script to explain how to edit the settings. 
+
+To run the script open the combine_review_qc_variables.py file in PyCharm (If it's not already open).
+To run the script click the Run 
+![image](https://github.com/user-attachments/assets/15f6a26d-e15e-4d67-82cc-0ade22f03b05)
+icon image at the top of the PyCharm window.
+
+
