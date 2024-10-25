@@ -48,6 +48,19 @@ The process produces output for each raw file processed, as a wide-format 'qc_me
 ### Executing script to combine and review QC diagnostics output files
 The script combine_review_qc_variables.py combines the qc_meta files for that were produced for each file into one. It then run some checks on the main variables and outputs the checks to a qc_log named 'QC_diagnostics_log_DDMonYYYY.docx'. The checks that are run are explained in the log together with PATT recommendations on how to handle any issues. As this is a self-contained process, all the settings that needs adjusting to run the script are found at the top of the processing script combine_review_qc_variables.py. Comments are added in the script to explain how to edit the settings. 
 
+To run the script, you will need to install some Python packages. Follow the steps below to do this:
+1. In PyCharm, navigate to the Terminal tab located at the bottom-left corner. This will open a terminal window displaying the directory for the virtual environment.
+2. Navigate to the folder you downloaded from GitHub (qc_diagnostics-master, unless renamed) by typing cd qc_diagnostics-master and press enter.
+3. Ensure that you have the pip package manager installed by typing python -m ensurepip and press enter.
+   - This will check if pip is installed and download it if neccesary.
+   - Pip is a tool that simplifies the process of downloading, installing and updating Python packages.
+4. Once pip is installed, run the following command to install all necessary packages: pip install -r requirements.txt and press Enter.
+   - The requirements.txt file contains a list of all the packages needed to run the script.
+   - The terminal will display the installation process, showing the packages being downloaded and installed into you virtual environment.
+   - The installation is complete once the terminal returns to the original directory path with a > symbol at the end. This process may take a few minutes.
+5. At this point, all the required packages have been installed, and you will not need to repeat this step for this project.
+
+
 To run the script open the combine_review_qc_variables.py file in PyCharm (If it's not already open).
 To run the script click the Run 
 ![image](https://github.com/user-attachments/assets/15f6a26d-e15e-4d67-82cc-0ade22f03b05)
