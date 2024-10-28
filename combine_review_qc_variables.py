@@ -254,7 +254,7 @@ if __name__ == '__main__':
     combined_df['duration_flag'] = ((combined_df['file_duration_days'] < min_file_duration) | (combined_df['file_duration_days'] > max_file_duration)).astype(int)
 
     qc_log = setup_var(log=qc_log, df=combined_df, var='duration_flag', comparison_operator='!=', setup_var=0, text_to_log=f'The duration of some files is outside the range {min_file_duration} - {max_file_duration} days.', extra_text='Yes',
-                       description='Check the files listed below:', recommendation=f'If the file duration is below {min_file_duration} days, check the starting battery %, was this lower than expected? \nIf the battery started at >90%, it is recommended that you test that device out before continuing to use it. This could be the first sign of the battery beginning to fail. \nIf the monitor lasts for the desired length on a re-test, it can be continued to be re-used.',
+                       description='Check the files listed below:', recommendation=f'PATT recommendations: If the file duration is below {min_file_duration} days, check the starting battery %, was this lower than expected? \nIf the battery started at >90%, it is recommended that you test that device out before continuing to use it. This could be the first sign of the battery beginning to fail. \nIf the monitor lasts for the desired length on a re-test, it can be continued to be re-used.',
                        x=255, y=0, z=0, list_headers=['id', 'QC_first_timestamp', 'QC_last_timestamp', 'file_duration_days', 'QC_first_battery_pct'], text_no_error=f'The file duration was between {min_file_duration} - {max_file_duration} days for all files. No files to check.')
 
 
