@@ -12,14 +12,12 @@ import docx
 from datetime import date
 from docx.shared import RGBColor
 import operator
+import setup
 
 ##################################################################################
 
 # --- FOLDERS --- #
 # The settings below needs editing before running the script, the comments explains how they should be changed:
-study = "example_project_name" # Edit to the name of the project
-results_file_path = 'example_file_path/_results' # Edit to the _results filepath where the output from QC_diagnostics will be saved.
-OUTPUT_FOLDER = 'example_file_path/_results/_combined' # Edit to the folder where you want the combined output to be saved and the qc_log. This can be in a separate folder in the projects folder or inside the _results folder.
 
 # --- STUDY SPECIFIC SETTINGS --- #
 # These settings needs editing before running the script, the comments explains how they should be changed:
@@ -58,7 +56,7 @@ def create_filelist(outputted_results):
     print(f"Changed directory to: {outputted_results}")
 
     # Use Python to find all .csv files and write to filelist.txt
-    csv_files = [f for f in os.listdir(results_file_path) if f.endswith('.csv')]
+    csv_files = [f for f in os.listdir(os.path.join(setup.PROJECT_DIR, setup.RESULTS_FOLDER)) if f.endswith('.csv')]
 
     if not csv_files:
         print("No CSV files found in the directory.")
@@ -76,7 +74,7 @@ def read_and_append(csv_list):
     for filename in csv_list:
         print(filename)
 
-        file_path = os.path.join(results_file_path, filename)
+        file_path = os.path.join(setup.PROJECT_DIR, setup.RESULTS_FOLDER, filename)
         df = pd.read_csv(file_path)
         all_dataframes.append(df)
 
@@ -93,7 +91,7 @@ def save_combined_csv(combined_df, output_folder):
         os.makedirs(output_folder)
         print(f"Created output folder: {output_folder}")
 
-    output_file_path = os.path.join(output_folder, study+'_combined_results.csv')
+    output_file_path = os.path.join(output_folder, setup.PROJECT_NAME+'_combined_results.csv')
     combined_df.to_csv(output_file_path, index=False)
     print(f"Combined DataFrame saved to {output_file_path}")
 
@@ -222,9 +220,9 @@ def setup_var(log, df, var, comparison_operator, setup_var, text_to_log, extra_t
 
 if __name__ == '__main__':
     # Combining the QC_diagnostic output for all files into one csv
-    csv_files = create_filelist(results_file_path)
+    csv_files = create_filelist(os.path.join(setup.PROJECT_DIR, setup.RESULTS_FOLDER))
     combined_df = read_and_append(csv_files)
-    save_combined_csv(combined_df, OUTPUT_FOLDER)
+    save_combined_csv(combined_df,  os.path.join(setup.PROJECT_DIR, setup.QC_OUTPUT))
 
     # Creating qc log with main qc variables to review
     qc_log = create_log("Main QC variables to review")
@@ -292,4 +290,4 @@ if __name__ == '__main__':
                        extra_text='Yes', description='Quadrant 0 = 00:00-05:59, Quadrant 1 = 06:00-11:59, Quadrant 2 = 12:00-17:59, Quadrant 3 = 18:00-23:59.', recommendation='PATT recommendations: Required wear duration in each quadrant is study dependent, no recommendations provided.', x=255, y=0, z=0,
                        list_headers=['id', 'QC_total_hours_wear', 'QC_hours_wear_quadrant_0', 'QC_hours_wear_quadrant_1', 'QC_hours_wear_quadrant_2', 'QC_hours_wear_quadrant_3'], text_no_error=f'All files have more than {quad_wear} hours wear in each quadrant. No files to check.')
 
-    save_log(qc_log, OUTPUT_FOLDER, DATE)
+    save_log(qc_log, os.path.join(setup.PROJECT_DIR, setup.QC_OUTPUT), DATE)

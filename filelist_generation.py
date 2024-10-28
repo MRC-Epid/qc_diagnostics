@@ -7,15 +7,16 @@
 import os
 import pandas as pd
 import glob
+import setup
 
 
-DATA_DIR = 'file_path_data_dir'    # Replace with the directory for where the data is saved
-OUTPUT_DIR = 'file_path_job_file'   # Replace with the directory where you want the job_file to be saved
-PROJECT_NAME = 'example_project_name'  # Replace with the name of the project
+#DATA_DIR = 'file_path_data_dir'    # Replace with the directory for where the data is saved
+#OUTPUT_DIR = 'file_path_job_file'   # Replace with the directory where you want the job_file to be saved
+#PROJECT_NAME = 'example_project_name'  # Replace with the name of the project
 
 # --- CREATING A FILELIST OF ALL FILES IN THE RESULTS FOLDER --- #
 def create_filelist():
-    file_list = glob.glob(os.path.join(DATA_DIR, '*.cwa'))
+    file_list = glob.glob(os.path.join(setup.PROJECT_DIR, setup.DATA_DIR, '*.cwa'))
     file_list = [f.replace('\\', '/') for f in file_list]
     filenames = [os.path.basename(f) for f in file_list]
     df = pd.DataFrame(file_list, columns=['filename'])
@@ -23,7 +24,7 @@ def create_filelist():
     df['pid'] = df['pid'].apply(lambda x: x.rsplit('_')[0])
     df = df[['pid', 'filename']]
 
-    output_path = os.path.join(OUTPUT_DIR, f'job_file_{PROJECT_NAME}.csv')
+    output_path = os.path.join(setup.PROJECT_DIR, setup.JOB_FILE_DIR, f'job_file_{setup.PROJECT_NAME}.csv')
     df.to_csv(output_path, index=False)
 
 
