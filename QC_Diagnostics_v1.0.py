@@ -20,18 +20,18 @@ from collections import OrderedDict
 import collections, re, copy
 import json
 import pandas as pd
+import setup
 
 ################################################################################################################
 # SETTINGS
 ################################################################################################################
 
 # FOLDER & FILE SETTINGS
-filetype = "Axivity"            # raw data file filetype ("GeneActiv" or "Axivity")
+#filetype = "Axivity"            # raw data file filetype ("GeneActiv" or "Axivity")
 
-job_file_path = ""              # location of csv job file
-charts_folder = ""              # location for plots (if required, else leave as "")
-results_folder = ""             # location for meta results
-anomalies_folder = ""           # location for anomaly records
+#charts_folder = ""              # location for plots (if required, else leave as "")
+#results_folder = ""             # location for meta results
+#anomalies_folder = ""           # location for anomaly records
 
 # PROCESSING SETTINGS AND THRESHOLDS
 Processing_epoch = 5            # processing epoch, in seconds, used for generating sample number statistic
@@ -76,13 +76,13 @@ def qc_analysis(job_details):
     filename_short = os.path.basename(filename).split('.')[0]
 
     battery_max = 0
-    if filetype == "GeneActiv":
+    if setup.filetype == "GeneActiv":
         battery_max = GA_battery_max
-    elif filetype == "Axivity":
+    elif setup.filetype == "Axivity":
         battery_max = AX_battery_max
 
     # Load the data from the hdf5 file
-    ts, header = data_loading.fast_load(filename, filetype)
+    ts, header = data_loading.fast_load(filename, setup.filetype)
 
     header["QC_filename"] = os.path.basename(filename)
 
@@ -101,7 +101,7 @@ def qc_analysis(job_details):
                         
     # check whether any anomalies have been found:
     if len(anomalies) > 0:
-        anomalies_file = os.path.join(anomalies_folder, "{}_anomalies.csv".format(filename_short))
+        anomalies_file = os.path.join(setup.PROJECT_DIR, setup.ANOMALIES_DIR, "{}_anomalies.csv".format(filename_short))
         df = pd.DataFrame(anomalies)
         
         for type in anomaly_types:
@@ -217,12 +217,12 @@ def qc_analysis(job_details):
     if PLOT == "YES":    
         # Plot statistics as subplots in one plot file per data file
         results_ts["ENMO"].add_annotations(nonwear_bouts)
-        results_ts.draw_qc(plotting_df, file_target=os.path.join(charts_folder,"{}_plots.png".format(filename_short)))
+        results_ts.draw_qc(plotting_df, file_target=os.path.join(setup.PROJECT_DIR, setup.CHARTS_DIR, "{}_plots.png".format(filename_short)))
 
     header["QC_script"] = version
     
     # file of metadata from qc process
-    qc_output = os.path.join(results_folder, "qc_meta_{}.csv".format(filename_short))
+    qc_output = os.path.join(setup.PROJECT_DIR, setup.RESULTS_FOLDER, "qc_meta_{}.csv".format(filename_short))
     # check if qc_output already exists...
     if os.path.isfile(qc_output):
         os.remove(qc_output)
@@ -238,4 +238,5 @@ def qc_analysis(job_details):
         del c.indices
         del c.cached_indices
 
+job_file_path = os.path.join(setup.PROJECT_DIR, setup.JOB_FILE_DIR)              # location of csv job file
 batch_processing.batch_process(qc_analysis, job_file_path, job_num, num_jobs, task="qc_diagnostics")
