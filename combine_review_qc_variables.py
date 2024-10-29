@@ -13,6 +13,7 @@ from datetime import date
 from docx.shared import RGBColor
 import operator
 import setup
+from setup import NAME_JOB_LIST
 
 ##################################################################################
 
@@ -103,7 +104,7 @@ def create_log(log_header):
 
 # Save log
 def save_log(log, output_file_path, date):
-    log_path = os.path.join(output_file_path, f'QC_to_review_{date}.docx')
+    log_path = os.path.join(output_file_path, f'QC_diagnostics_log_{NAME_JOB_LIST}_{date}.docx')
     log.save(log_path)
 
 

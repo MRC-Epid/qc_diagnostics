@@ -26,13 +26,6 @@ import setup
 # SETTINGS
 ################################################################################################################
 
-# FOLDER & FILE SETTINGS
-#filetype = "Axivity"            # raw data file filetype ("GeneActiv" or "Axivity")
-
-#charts_folder = ""              # location for plots (if required, else leave as "")
-#results_folder = ""             # location for meta results
-#anomalies_folder = ""           # location for anomaly records
-
 # PROCESSING SETTINGS AND THRESHOLDS
 Processing_epoch = 5            # processing epoch, in seconds, used for generating sample number statistic
 noise_cutoff_mg = 13            # noise threshold in mg
@@ -238,5 +231,5 @@ def qc_analysis(job_details):
         del c.indices
         del c.cached_indices
 
-job_file_path = os.path.join(setup.PROJECT_DIR, setup.JOB_FILE_DIR)              # location of csv job file
+job_file_path = os.path.join(setup.PROJECT_DIR, setup.JOB_FILE_DIR, f'job_file_{setup.NAME_JOB_LIST}.csv')              # location of csv job file
 batch_processing.batch_process(qc_analysis, job_file_path, job_num, num_jobs, task="qc_diagnostics")

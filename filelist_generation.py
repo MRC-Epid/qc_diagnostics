@@ -16,7 +16,7 @@ import setup
 
 # --- CREATING A FILELIST OF ALL FILES IN THE RESULTS FOLDER --- #
 def create_filelist():
-    file_list = glob.glob(os.path.join(setup.PROJECT_DIR, setup.DATA_DIR, '*.cwa'))
+    file_list = glob.glob(os.path.join(setup.PROJECT_DIR, setup.DATA_DIR, setup.file_extension))
     file_list = [f.replace('\\', '/') for f in file_list]
     filenames = [os.path.basename(f) for f in file_list]
     df = pd.DataFrame(file_list, columns=['filename'])
@@ -24,7 +24,7 @@ def create_filelist():
     df['pid'] = df['pid'].apply(lambda x: x.rsplit('_')[0])
     df = df[['pid', 'filename']]
 
-    output_path = os.path.join(setup.PROJECT_DIR, setup.JOB_FILE_DIR, f'job_file_{setup.PROJECT_NAME}.csv')
+    output_path = os.path.join(setup.PROJECT_DIR, setup.JOB_FILE_DIR, f'job_file_{setup.NAME_JOB_LIST}.csv')
     df.to_csv(output_path, index=False)
 
 
