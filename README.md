@@ -22,16 +22,6 @@ There are two options available for downloading the code, depending on whether y
 3.  Regardless of whether you used step 1 or 2 above, you should now have a folder that contains the required files.  Also included is a folder named "_logs", this is where log files will be created by the process.
 4.  Included in the downloaded files is an example job file with the required column headings "pid" and "filename". The pid column must contain unique values and the filename column must contain the complete filepath of each file requiring processing.
 
-### Creating job file list
-The script filelist_generation.py creates a filelist of accelerometer files which is needed when running the qc_diagnostics script. As this is a self-contained process, all the settings that needs adjusting to run the script are found at the top of the processing script filelist_generation.py. Comments are added in the script to explain how to edit the settings. Edit the DATA_DIR to the directory where the accelerometer files are saved (This is the folder with the .cwa or .bin files). Edit the OUTPUT_DIR to the directory where you want the filelist .csv to be saved and lastly edit the PROJECT_NAME to the name of the project. The script is now ready to be run.
-
-To run the script open the filelist_generation.py file in PyCharm (If it's not already open).
-To run the script click the Run 
-![image](https://github.com/user-attachments/assets/15f6a26d-e15e-4d67-82cc-0ade22f03b05)
-icon image at the top of the PyCharm window.
-
-A job_file_projectname.csv is now created in the OUTPUT_DIR that was specified. This file lists participant id from the file as well as the filepath for each of the accelerometer files. When running th qc_diagnostics script (see below) when editing the variable job_file_path this refers to the path of this file that has just been created. 
-
 ### Editing the QC_Diagnostics script
 As this is a self-contained process, all the settings are found at the top of the processing script QC_Diagnostics_v1.0.py.
 
