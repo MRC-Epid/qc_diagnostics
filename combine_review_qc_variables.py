@@ -17,11 +17,13 @@ from setup import NAME_JOB_LIST
 
 ##################################################################################
 
-# --- FOLDERS --- #
-# The settings below needs editing before running the script, the comments explains how they should be changed:
+
+# The settings below refer to the setup settings that were applied when setting up monitors, the expected file length and minimum duration wear.
+# As default is it set up to check if device was set up for 7 days at 100 hz, with a sample range of 8g and with a minimum wear of 4 days (96 hours - with at least 6 hours wear in each quadrant).
+# These settings can be kept or changed to fit your project.
 
 # --- STUDY SPECIFIC SETTINGS --- #
-# These settings needs editing before running the script, the comments explains how they should be changed:
+# These settings can be edited before running the script, the comments explains how they should be changed:
 frequency = 100 # What frequency the device was set up to record with (hz)
 sample_range = 8 # What sample range the device was set up to record with (g)
 min_file_duration = 6.5 # If the device is set up to record for 7 days, this should be set to 6.5 to have a buffer. Change according to duration settings.

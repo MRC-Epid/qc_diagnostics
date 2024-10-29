@@ -9,11 +9,6 @@ import pandas as pd
 import glob
 import setup
 
-
-#DATA_DIR = 'file_path_data_dir'    # Replace with the directory for where the data is saved
-#OUTPUT_DIR = 'file_path_job_file'   # Replace with the directory where you want the job_file to be saved
-#PROJECT_NAME = 'example_project_name'  # Replace with the name of the project
-
 # --- CREATING A FILELIST OF ALL FILES IN THE RESULTS FOLDER --- #
 def create_filelist():
     file_list = glob.glob(os.path.join(setup.PROJECT_DIR, setup.DATA_DIR, setup.file_extension))
