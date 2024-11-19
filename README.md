@@ -13,57 +13,10 @@ The process currently only supports .cwa (AX3) or .bin (GENEActiv) binary files.
 
 NOTE: This process has been developed on a Linux operating system, but is also compatible with Windows.  It has NOT been tested for any other operating system type, e.g. macOS.
 
-### Downloading and preparing the environment
-There are two options available for downloading the code, depending on whether you wish to use Git.  Option 1 requires Git to be installed in your environment ([https://git-scm.com/](url)).
-1.  EITHER use the command line to navigate to your desired folder location and execute the following command:
-`git clone https://github.com/MRC-Epid/qc_diagnostics/`
-
-2.  OR select the 'Repository' option from the lefthand sidebar, and select the download icon on the top-right of the Repository page.  You can select from different formats of download.
-3.  Regardless of whether you used step 1 or 2 above, you should now have a folder that contains the required files.  Also included is a folder named "_logs", this is where log files will be created by the process.
-4.  Included in the downloaded files is an example job file with the required column headings "pid" and "filename". The pid column must contain unique values and the filename column must contain the complete filepath of each file requiring processing.
-
-### Editing the QC_Diagnostics script
-As this is a self-contained process, all the settings are found at the top of the processing script QC_Diagnostics_v1.0.py.
-
-The settings are commented to explain their usage, and, as a minimum, the ‘filetype’ setting should be checked and the job file location, 'charts', 'results' and 'anomalies' folder locations must be provided.
-
-'Processing_epoch' and 'noise_cutoff_mg' are set to standard default values, but can be altered if required.
-
-The plotting functionality can be turned off by changing the 'PLOT' setting to "NO".
-
-### Executing the QC_Diagnostics script
-The processing script takes a 'job number' and 'number of jobs' from the command line as arguments.  These are used in the script to split the job list into sections.  Submitting the job can be done in a number of ways, depending on your environment.
-
-1.  If you do not have the capacity to submit multiple jobs then the simplest way to run the script is to give these both as "1" when submitting the script. Use the command line to navigate to the folder containing the script and issue the following command: `ipython QC_Diagnostics_v1.0.py 1 1` 
-This will run the script as one process.
-
-2.  If, however, you do have multiple-process capability you could submit the script in batches in this way: `ipython QC_Diagnostics_v1.0.py 1 3 & ipython QC_Diagnostics_v1.0.py 2 3 & ipython QC_Diagnostics_v1.0.py 3 3` 
-This would execute the python script three times, each process using one third of the job list.
-
-3.  Another batch processing option would be to use a scheduling engine, such as Sun Grid Engine.  The shell script 'qc_batch_sge.sh' has been written to take the processing script's relative path, and the number of batches required.  It then uses the python environment (in this case provided by Anaconda3) in order to automatically submit the required number of jobs.  In order to submit three jobs, it would be executed from the command line thus: `./qc_batch_sge.sh QC_Diagnostics_v1.0.py 3`
+### Scripts
+The repository provides a script that creates a job file list that is needed to run the QC_Diagnostics script, the QC_Diagnostics script as well as a script that combines the QC_Diagnostics output and generates a log with any issues to review. Navigate to the qc_diagnostics [wiki](https://github.com/MRC-Epid/qc_diagnostics/wiki) on further guidance on how to prepare and run the scripts. 
 
 ### Output
-The process produces output for each raw file processed, as a wide-format 'qc_meta' .csv file. The variables come from both the metadata contained in the file itself (which varies between the AX3 and GENEActiv files) and the derived output from the QC process. These files can be consolidated and reviewed accordingly.  If an output file already exists for the current raw file being processed it will be overwritten with the results from the current process.  In addition, if there are any “anomalies” detected in the raw files processed, an ‘anomalies’ .csv file will be created in the specified folder.  
-
-### Executing script to combine and review QC diagnostics output files
-The script combine_review_qc_variables.py combines the qc_meta files that were produced for each file into one. It then run some checks on the main variables and outputs the checks to a qc_log named 'QC_diagnostics_log_DDMonYYYY.docx'. The checks that are run are explained in the log together with PATT recommendations on how to handle any issues. As this is a self-contained process, all the settings that needs adjusting to run the script are found at the top of the processing script combine_review_qc_variables.py. Comments are added in the script to explain how to edit the settings. 
-
-To run this script, you will need to install some Python packages. Follow the steps below to do this:
-1. In PyCharm, navigate to the Terminal tab located at the bottom-left corner. This will open a terminal window displaying the directory for the virtual environment.
-2. Navigate to the folder you downloaded from GitHub (qc_diagnostics-master, unless renamed) by typing cd qc_diagnostics-master and press enter.
-3. Ensure that you have the pip package manager installed by typing python -m ensurepip and press enter.
-   - This will check if pip is installed and download it if neccesary.
-   - Pip is a tool that simplifies the process of downloading, installing and updating Python packages.
-4. Once pip is installed, run the following command to install all necessary packages: pip install -r requirements.txt and press Enter.
-   - The requirements.txt file contains a list of all the packages needed to run the script.
-   - The terminal will display the installation process, showing the packages being downloaded and installed into you virtual environment.
-   - The installation is complete once the terminal returns to the original directory path with a > symbol at the end. This process may take a few minutes.
-5. At this point, all the required packages have been installed, and you will not need to repeat this step for this project.
-
-
-To run the script open the combine_review_qc_variables.py file in PyCharm (If it's not already open).
-To run the script click the Run 
-![image](https://github.com/user-attachments/assets/15f6a26d-e15e-4d67-82cc-0ade22f03b05)
-icon image at the top of the PyCharm window.
+The process produces output for each raw accelerometer file processed, as a wide-format 'qc_meta' .csv file. The variables come from both the metadata contained in the file itself (which varies between the AX3 and GENEActiv files) and the derived output from the QC process. These files can be consolidated and reviewed accordingly.  If an output file already exists for the current raw file being processed it will be overwritten with the results from the current process.  In addition, if there are any “anomalies” detected in the raw files processed, an ‘anomalies’ .csv file will be created in the specified folder.  
 
 
