@@ -10,6 +10,8 @@ import os
 import pandas as pd
 import docx
 from datetime import date
+
+from Tools.scripts.combinerefs import combine
 from docx.shared import RGBColor
 import operator
 import setup
@@ -231,6 +233,7 @@ if __name__ == '__main__':
     qc_log = create_log("Main QC variables to review")
 
     # Checking if subject_code and filename matches:
+    combined_df['subject_code'] = combined_df['subject_code'].apply(str)
     combined_df['id_flag'] = combined_df.apply(lambda row: int(row['subject_code'] not in row['file_filename']), axis=1)
     qc_log = setup_var(log=qc_log, df=combined_df, var='id_flag', comparison_operator='!=', setup_var=0, text_to_log='The subject_id and filename does not match for some of the files.', extra_text='Yes', description=' Check the files listed below:',
                        recommendation='PATT recommendations: Please check to find out who this data belongs to. Do the dates of wear match either of the IDs? \nFrom your own logs, did either of the IDs use the monitor that is listed as used? \nIf you cannot confirm who the data belongs to, this data will likely not be able to be used. Keep a note of the findings, so when it comes to processing the data, the team are not surprised when the ID within the file does not match what is stored in the filename.', x=255, y=0, z=0, list_headers=['subject_code', 'file_filename', 'device'], text_no_error='The subject code and filename matches for all files. No files to check.')
@@ -267,7 +270,13 @@ if __name__ == '__main__':
                        list_headers=['id', 'QC_first_battery_pct', 'QC_lowest_battery_pct', 'QC_max_discharge'], text_no_error='There were no battery issues, no files to check.')
 
     # Checking if there was any anomalies
-    qc_log = setup_var(log=qc_log, df=combined_df, var='QC_axis_anomaly', comparison_operator='!=', setup_var=False, text_to_log='Some files had axis anomalies. Check the files listed below:',
+    # First generating a flag to indicate if any anomalies
+    qc_log['anomaly_flag'] = ((combined_df['QC_Anomaly_A'] > 0) | (combined_df['QC_Anomaly_B'] > 0) |
+                              (combined_df['QC_Anomaly_C'] > 0) | (combined_df['QC_Anomaly_D'] > 0) |
+                              (combined_df['QC_Anomaly_E'] > 0) | (combined_df['QC_Anomaly_F'] > 0) |
+                              (combined_df['QC_Anomaly_G'] > 0)).astype(int)
+
+    qc_log = setup_var(log=qc_log, df=combined_df, var='anomaly_flag', comparison_operator='!=', setup_var=0, text_to_log='Some files had axis anomalies. Check the files listed below:',
                        extra_text='Yes', description='Each of the anomalies relates to timestamp issues where the device has lost its ability to keep track of time.', recommendation='PATT recommendations: It is recommended to remove the device from the pool and not reuse it. \nThe data should be cleaned automatically, but make sure to check through the results.', x=255, y=0, z=0,
                        list_headers=['id', 'device', 'QC_anomaly_A', 'QC_anomaly_B', 'QC_anomaly_C', 'QC_anomaly_D', 'QC_anomaly_E', 'QC_anomaly_F', 'QC_anomaly_G'], text_no_error='No anomalies were found. No files to check.')
 
