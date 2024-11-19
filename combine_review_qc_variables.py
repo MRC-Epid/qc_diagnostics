@@ -11,7 +11,6 @@ import pandas as pd
 import docx
 from datetime import date
 
-from Tools.scripts.combinerefs import combine
 from docx.shared import RGBColor
 import operator
 import setup
@@ -271,10 +270,10 @@ if __name__ == '__main__':
 
     # Checking if there was any anomalies
     # First generating a flag to indicate if any anomalies
-    qc_log['anomaly_flag'] = ((combined_df['QC_Anomaly_A'] > 0) | (combined_df['QC_Anomaly_B'] > 0) |
-                              (combined_df['QC_Anomaly_C'] > 0) | (combined_df['QC_Anomaly_D'] > 0) |
-                              (combined_df['QC_Anomaly_E'] > 0) | (combined_df['QC_Anomaly_F'] > 0) |
-                              (combined_df['QC_Anomaly_G'] > 0)).astype(int)
+    combined_df['anomaly_flag'] = ((combined_df['QC_anomaly_A'] > 0) | (combined_df['QC_anomaly_B'] > 0) |
+                              (combined_df['QC_anomaly_C'] > 0) | (combined_df['QC_anomaly_D'] > 0) |
+                              (combined_df['QC_anomaly_E'] > 0) | (combined_df['QC_anomaly_F'] > 0) |
+                              (combined_df['QC_anomaly_G'] > 0)).astype(int)
 
     qc_log = setup_var(log=qc_log, df=combined_df, var='anomaly_flag', comparison_operator='!=', setup_var=0, text_to_log='Some files had axis anomalies. Check the files listed below:',
                        extra_text='Yes', description='Each of the anomalies relates to timestamp issues where the device has lost its ability to keep track of time.', recommendation='PATT recommendations: It is recommended to remove the device from the pool and not reuse it. \nThe data should be cleaned automatically, but make sure to check through the results.', x=255, y=0, z=0,
